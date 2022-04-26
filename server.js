@@ -12,7 +12,7 @@ app.get("/", function (req, res) {
 });
 
 
-app.get("/api/:date_string", function(req, res) {
+app.get("/api/:date_string?", function(req, res) {
   
   const userInput = req.params.date_string;
 
