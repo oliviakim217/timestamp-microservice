@@ -12,15 +12,15 @@ app.get("/", function (req, res) {
 });
 
 
-app.get("/api/:date?", function(req, res) {
+app.get("/api/:date_string?", function(req, res) {
   
-  const userInput = req.params.date;
+  const userInput = req.params.date_string;
 
   if (!userInput) {
     res.json({ unix: Math.round(Date.now()), utc: new Date().toUTCString() });
   } else {
     
-    function onlyNumbers(str) { // Check to see if userInput only has numbers
+    function onlyNumbers(str) { // Check to see if the userInput only has numbers
       return /^[0-9]+$/.test(str);
     }
     
@@ -28,19 +28,26 @@ app.get("/api/:date?", function(req, res) {
       var dateNumber = userInput.replace(/-/g, "");
       dateNumber = Date.parse(userInput);
 
-    } else if (onlyNumbers(userInput)) {
-      var dateNumber = Number(userInput); //convert string to number
-
     } else {
-      res.json({ error: "Invalid Date" });
-    }
+        var dateNumber = Number(userInput); //convert string to number
+      }
+    // } else if (onlyNumbers(userInput)) {
+    //   var dateNumber = Number(userInput); //convert string to number
+    // }
+    // } else if ({
+    //   res.json({ error: "Invalid Date" });
+    // }
 
     const timestamp = new Date(dateNumber);
     const UnixTime = Math.round(timestamp);
     
-    res.json({ unix: UnixTime, utc: timestamp.toUTCString() });
+    if (timestamp.toUTCString() === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      res.json({ unix: UnixTime, utc: timestamp.toUTCString() });
+    }
   }
-});
+}); 
 
 
 var listener = app.listen(process.env.PORT, function () {
